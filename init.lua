@@ -73,14 +73,8 @@ function sys4_quest.make_initial_quests()
 		     and (
 			name == "award_lumberjack"
 			   or name == "award_junglebaby"
-			   or name == "award_lumberjack_semipro"
-			   or name == "award_lumberjack_professional"
-			   or name == "award_lumberjack_leet"
-			   or name == "award_jungleman"
 			   or name == "award_youre_winner"
 			   or name == "award_mine2"
-			   or name == "award_mine3"
-			   or name == "award_mine4"
 			   or name == "award_marchand_de_sable"
 		     )
 	       )
