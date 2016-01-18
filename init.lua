@@ -65,11 +65,11 @@ function sys4_quest.make_initial_quests()
 	 and (
 	    string.split(name, "_")[1] ~= "award"
 	       or (
-		  minetest.setting_get("sys4_setlist") ~= "sys4"
+		  sys4_achievements.awards ~= "sys4"
 		     and name == "award_mesefind"
 	       )
 	       or (
-		  minetest.setting_get("sys4_setlist") == "sys4"
+		  sys4_achievements.awards == "sys4"
 		     and (
 			name == "award_lumberjack"
 			   or name == "award_junglebaby"
@@ -105,23 +105,17 @@ function sys4_quest.isInSameGroup(node1, node2, quest)
    local mod = ""
 
    if node1 == 'default:tree'
-      and not
-      (
-	 quest == "award_lumberjack"
-	    or quest == "award_junglebaby"
-	    or quest == "award_lumberjack_semipro"
-	    or quest == "award_lumberjack_professional"
-	    or quest == "award_lumberjack_leet"
-	    or quest == "award_jungleman"
-	    or quest == "award_youre_winner"
-	    or quest == "award_mine2"
-	    or quest == "award_mine3"
-	    or quest == "award_mine4"
-	    or quest == "award_marchand_de_sable"
-      )
+      and ( quest == "award_lumberjack"
+	       or quest == "award_lumberjack_semipro"
+	       or quest == "award_lumberjack_professional"
+	       or quest == "award_lumberjack_leet")
    then
       mod = 'default'
-      items = {'tree', 'jungletree', 'pine_tree', 'acacia_tree'}
+      items = {'tree', 'pine_tree', 'acacia_tree'}
+
+   elseif node1 == 'default:tree' then
+      mod = 'default'
+      items = {'tree', 'pine_tree', 'acacia_tree', 'jungletree'}
 
    elseif node1 == 'default:leaves' then
       mod = 'default'
@@ -135,17 +129,10 @@ function sys4_quest.isInSameGroup(node1, node2, quest)
       mod = 'default'
       items = {'snow', 'snowblock'}
 
-   elseif node1 == 'default:stone'
-      and not
-      ( quest == "award_youre_winner"
-	   or quest == "award_mine2"
-	   or quest == "award_mine3"
-	   or quest == "award_mine4"
-	   or quest == "award_marchand_de_sable"
-      )
-   then
+   elseif node1 == 'default:stone' then
       mod = 'default'
       items = {'stone', 'desert_stone', 'cobble', 'desert_cobble', 'mossycobble'}
+
    elseif node1 == 'default:wood' then
       mod = 'default'
       items = {'wood', 'junglewood', 'pine_wood', 'acacia_wood'}
@@ -158,11 +145,11 @@ function sys4_quest.isInSameGroup(node1, node2, quest)
       mod = 'default'
       items = {'stonebrick', 'desert_stonebrick'}
 
-   elseif node1 == 'dye:red' then
+   elseif node1 == 'dye:black' then
       mod = "dye"
       items = {'red', 'blue', 'yellow', 'white', 'orange', 'violet', 'black'}
 
-   elseif node1 == 'wool:red' then
+   elseif node1 == 'wool:black' then
       mod = 'wool'
       items = {'red', 'blue', 'yellow', 'white', 'orange', 'violet', 'black'}
 
