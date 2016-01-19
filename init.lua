@@ -72,7 +72,6 @@ function sys4_quest.make_initial_quests()
 		  sys4_achievements.awards == "sys4"
 		     and (
 			name == "award_lumberjack"
-			   or name == "award_junglebaby"
 			   or name == "award_youre_winner"
 			   or name == "award_mine2"
 			   or name == "award_marchand_de_sable"
