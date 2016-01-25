@@ -181,16 +181,25 @@ for _,quest in ipairs(sys4_quest.quests) do
 			   callback = sys4_quest.next_quest })
 end
 
+local isNewPlayer = false
+minetest.register_on_newplayer(
+   function(player)
+      isNewPlayer = true
+   end)
+
 local oldpos = {}
 minetest.register_on_joinplayer(
-   function (player)
-      for _,quest in ipairs(sys4_quest.quests) do
-	 if not awards.def[quest[1] ].award_req then
-	    quests.start_quest(player:get_player_name(), "sys4_quest:"..quest[1])
+   function(player)
+      local playern = player:get_player_name()
+      if (isNewPlayer) then
+	 for _,quest in ipairs(sys4_quest.quests) do
+	    if not awards.def[quest[1] ].award_req then
+	       quests.start_quest(playern, "sys4_quest:"..quest[1])
+	    end
 	 end
       end
-      --	quests.show_hud(player:get_player_name())
-      oldpos[player:get_player_name()] = player:getpos() -- remember the current location for movement based quests
+
+      oldpos[playern] = player:getpos() -- remember the current location for movement based quests
    end)
 
 -- For quests where you have to dig something, the updates happen here
