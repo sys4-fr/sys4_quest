@@ -74,7 +74,6 @@ function sys4_quest.make_initial_quests()
 			name == "award_lumberjack"
 			   or name == "award_youre_winner"
 			   or name == "award_mine2"
-			   or name == "award_marchand_de_sable"
 		     )
 	       )
 	 )
@@ -93,73 +92,9 @@ function sys4_quest.make_initial_quests()
    return initialQuests
 end
 
-function sys4_quest.isInSameGroup(node1, node2, quest)
-   local items = {}
-   local mod = ""
-
-   if node1 == 'default:tree'
-      and ( quest == "award_lumberjack"
-	       or quest == "award_lumberjack_semipro"
-	       or quest == "award_lumberjack_professional"
-	       or quest == "award_lumberjack_leet")
-   then
-      mod = 'default'
-      items = {'tree', 'pine_tree', 'acacia_tree'}
-
-   elseif node1 == 'default:tree' then
-      mod = 'default'
-      items = {'tree', 'pine_tree', 'acacia_tree', 'jungletree'}
-
-   elseif node1 == 'default:leaves' then
-      mod = 'default'
-      items = {'leaves', 'jungleleaves', 'pine_needles', 'acacia_leaves'}
-
-   elseif node1 == 'default:sand' then
-      mod = 'default'
-      items = {'sand', 'desert_sand'}
-
-   elseif node1 == 'default:snow' then
-      mod = 'default'
-      items = {'snow', 'snowblock'}
-
-   elseif node1 == 'default:stone' then
-      mod = 'default'
-      items = {'stone', 'desert_stone', 'cobble', 'desert_cobble', 'mossycobble'}
-
-   elseif node1 == 'default:wood' then
-      mod = 'default'
-      items = {'wood', 'junglewood', 'pine_wood', 'acacia_wood'}
-
-   elseif node1 == 'default:cobble' then
-      mod = 'default'
-      items = {'cobble', 'desert_cobble'}
-
-   elseif node1 == 'default:stonebrick' then
-      mod = 'default'
-      items = {'stonebrick', 'desert_stonebrick'}
-
-   elseif node1 == 'dye:black' then
-      mod = "dye"
-      items = {'red', 'blue', 'yellow', 'white', 'orange', 'violet', 'black'}
-
-   elseif node1 == 'wool:black' then
-      mod = 'wool'
-      items = {'red', 'blue', 'yellow', 'white', 'orange', 'violet', 'black'}
-
-   elseif node1 == 'vessels:glass_bottle' then
-      mod = 'vessels'
-      items = {'glass_bottle', 'steel_bottle', 'drinking_glass', 'glass_fragments'}
-
-   elseif node1 == 'beds:bed_bottom' then
-      mod = 'beds'
-      items = {'bed_bottom', 'fancy_bed_bottom'}
-
-   elseif node1 == node2 then
-      return true
-   end
-   
-   for _,item in pairs(items) do
-      if mod..":"..item == node2 then
+function sys4_quest.isEquivalent(nodeTargets, nodeDug)
+   for _, nodeTarget in pairs(nodeTargets) do
+      if nodeTarget == nodeDug then
 	 return true
       end
    end
@@ -211,9 +146,7 @@ minetest.register_on_dignode(
 	 local questname = quest[1]
 	 local award  = awards.def[questname]
 
-	 local node = award.trigger.node
-
-	 if award.trigger.type == "dig" and sys4_quest.isInSameGroup(node, oldnode.name, questname) then
+	 if award.trigger.type == "dig" and sys4_quest.isEquivalent(award.otherTargets, oldnode.name) then
 	    if quests.update_quest(playern, "sys4_quest:"..questname, 1) then
 	       minetest.after(1, quests.accept_quest, playern, "sys4_quest:"..questname)
 	    end
@@ -230,9 +163,7 @@ minetest.register_on_craft(
 	 local questname = quest[1]
 	 local award = awards.def[questname]
 
-	 local node = award.trigger.node
-
-	 if award.trigger.type == "craft" and sys4_quest.isInSameGroup(node, itemstack:get_name(), questname) then
+	 if award.trigger.type == "craft" and sys4_quest.isEquivalent(award.otherTargets, itemstack:get_name()) then
 	    
 	    if quests.update_quest(playern, "sys4_quest:"..questname, itemstack:get_count()) then
 	       minetest.after(1, quests.accept_quest, playern, "sys4_quest:"..questname)
@@ -251,9 +182,7 @@ function sys4_quest.register_on_placenode(pos, node, placer)
       local questname = quest[1]
       local award = awards.def[questname]
 
-      local awardnode = award.trigger.node
-
-      if award.trigger.type == "place" and sys4_quest.isInSameGroup(awardnode, node.name, questname) then
+      if award.trigger.type == "place" and sys4_quest.isEquivalent(award.otherTargets, node.name) then
 	 if quests.update_quest(playern, "sys4_quest:"..questname, 1) then
 	    minetest.after(1, quests.accept_quest, playern, "sys4_quest:"..questname)
 	 end
