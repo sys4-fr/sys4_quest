@@ -65,14 +65,10 @@ function sys4_quest.make_initial_quests()
 	 and (
 	    string.split(name, "_")[1] ~= "award"
 	       or (
-		  sys4_achievements.awards ~= "sys4"
-		     and name == "award_mesefind"
-	       )
-	       or (
 		  sys4_achievements.awards == "sys4"
 		     and (
 			name == "award_lumberjack"
-			   or name == "award_youre_winner"
+			   or name == "award_obsessed_with_obsidian"
 			   or name == "award_mine2"
 		     )
 	       )
@@ -146,6 +142,10 @@ minetest.register_on_dignode(
 	 local questname = quest[1]
 	 local award  = awards.def[questname]
 
+	 if not award.otherTargets or award.otherTargets == nil then
+	    award.otherTargets = {award.trigger.node}
+	 end
+
 	 if award.trigger.type == "dig" and sys4_quest.isEquivalent(award.otherTargets, oldnode.name) then
 	    if quests.update_quest(playern, "sys4_quest:"..questname, 1) then
 	       minetest.after(1, quests.accept_quest, playern, "sys4_quest:"..questname)
@@ -162,6 +162,10 @@ minetest.register_on_craft(
       for _,quest in ipairs(sys4_quest.quests) do
 	 local questname = quest[1]
 	 local award = awards.def[questname]
+
+	 if not award.otherTargets or award.otherTargets == nil then
+	    award.otherTargets = {award.trigger.node}
+	 end
 
 	 if award.trigger.type == "craft" and sys4_quest.isEquivalent(award.otherTargets, itemstack:get_name()) then
 	    
@@ -182,6 +186,10 @@ function sys4_quest.register_on_placenode(pos, node, placer)
       local questname = quest[1]
       local award = awards.def[questname]
 
+      if not award.otherTargets or award.otherTargets == nil then
+	 award.otherTargets = {award.trigger.node}
+      end
+      
       if award.trigger.type == "place" and sys4_quest.isEquivalent(award.otherTargets, node.name) then
 	 if quests.update_quest(playern, "sys4_quest:"..questname, 1) then
 	    minetest.after(1, quests.accept_quest, playern, "sys4_quest:"..questname)
